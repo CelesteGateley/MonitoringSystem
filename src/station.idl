@@ -4,20 +4,35 @@ module MonitoringSystem {
         nitrous_oxide
     };
 
-    typedef sequence<MonitorType> typeseq;
-
-    interface MonitorStation {
-        typeseq get_available_sensors();
-        double get_sensor_value(in MonitorType sensor);
+    struct LogEntry {
+        string location;
+        MonitorType type;
+        double value;
     };
 
-    typedef sequence<MonitorStation> stationseq;
+    typedef sequence<MonitorType> MonitorTypeSequence;
+    typedef sequence<LogEntry> LogSequence;
 
-    interface LocalServer {
-        stationseq get_available_stations();
+    interface MonitorStation {
+        MonitorTypeSequence get_available_sensors();
+        double get_sensor_value(in MonitorType sensor);
+        /** Extra Function - Enable/Disable Stations/Servers **/
+        void enable_sensor(in MonitorType sensor);
+        void enable_station();
+
+        void disable_sensor(in MonitorType sensor);
+        void disable_station();
+    };
+
+    typedef sequence<MonitorStation> MonitorStationSequence;
+
+    interface LocalControlServer {
+        MonitorStationSequence get_available_stations();
         void report_value(in MonitorStation station, in MonitorType type, in double sensor_value);
+        LogSequence get_logs();
     };
 
     interface CentralControl {
+        void confirmed_alarm(in LocalControlServer server);
     };
 };
