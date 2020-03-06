@@ -1,0 +1,23 @@
+module MonitoringSystem {
+
+    enum MonitorType {
+        nitrous_oxide
+    };
+
+    typedef sequence<MonitorType> typeseq;
+
+    interface MonitorStation {
+        typeseq get_available_sensors();
+        double get_sensor_value(in MonitorType sensor);
+    };
+
+    typedef sequence<MonitorStation> stationseq;
+
+    interface LocalServer {
+        stationseq get_available_stations();
+        void report_value(in MonitorStation station, in MonitorType type, in double sensor_value);
+    };
+
+    interface CentralControl {
+    };
+};
