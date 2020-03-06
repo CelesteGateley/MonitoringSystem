@@ -27,12 +27,16 @@ module MonitoringSystem {
     typedef sequence<MonitorStation> MonitorStationSequence;
 
     interface LocalControlServer {
+        void register();
+        void deregister();
         MonitorStationSequence get_available_stations();
         void report_value(in MonitorStation station, in MonitorType type, in double sensor_value);
         LogSequence get_logs();
     };
 
     interface CentralControl {
+        void register();
+        void deregister();
         void confirmed_alarm(in LocalControlServer server);
     };
 };
