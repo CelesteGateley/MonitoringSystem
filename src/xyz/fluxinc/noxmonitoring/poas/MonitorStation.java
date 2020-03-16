@@ -7,9 +7,11 @@ import xyz.fluxinc.noxmonitoring.corba.MonitorType;
 public class MonitorStation extends MonitorStationPOA {
 
     private Station station;
+    private String location;
 
-    private MonitorStation() {
+    private MonitorStation(String location) {
         station = new Station();
+        this.location = location;
     }
 
     @Override
@@ -20,6 +22,11 @@ public class MonitorStation extends MonitorStationPOA {
     @Override
     public double get_sensor_value(MonitorType sensor) {
         return station.getValue(sensor);
+    }
+
+    @Override
+    public String get_location() {
+        return location;
     }
 
     @Override

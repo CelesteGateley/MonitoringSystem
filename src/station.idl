@@ -19,6 +19,7 @@ module xyz {
                 interface MonitorStation {
                     MonitorTypeSequence get_available_sensors();
                     double get_sensor_value(in MonitorType sensor);
+                    string get_location();
                     /** Extra Function - Enable/Disable Stations/Servers **/
                     void enable_sensor(in MonitorType sensor);
                     void enable_station();
