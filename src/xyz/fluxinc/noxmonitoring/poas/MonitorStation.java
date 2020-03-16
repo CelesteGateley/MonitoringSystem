@@ -1,8 +1,8 @@
-package xyz.fluxinc.PortableObjectAdapters;
+package xyz.fluxinc.noxmonitoring.poas;
 
-import xyz.fluxinc.Implementations.Station;
-import xyz.fluxinc.MonitoringSystem.MonitorStationPOA;
-import xyz.fluxinc.MonitoringSystem.MonitorType;
+import xyz.fluxinc.noxmonitoring.implementations.Station;
+import xyz.fluxinc.noxmonitoring.corba.MonitorStationPOA;
+import xyz.fluxinc.noxmonitoring.corba.MonitorType;
 
 public class MonitorStation extends MonitorStationPOA {
 
@@ -39,5 +39,9 @@ public class MonitorStation extends MonitorStationPOA {
     @Override
     public void disable_station() {
 
+    }
+
+    public void setSensorValue(MonitorType type, double value) {
+        station.setValue(type, value);
     }
 }

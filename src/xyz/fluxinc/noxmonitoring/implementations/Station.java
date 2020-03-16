@@ -1,6 +1,6 @@
-package xyz.fluxinc.Implementations;
+package xyz.fluxinc.noxmonitoring.implementations;
 
-import xyz.fluxinc.MonitoringSystem.MonitorType;
+import xyz.fluxinc.noxmonitoring.corba.MonitorType;
 
 import java.util.HashMap;
 import java.util.Map;

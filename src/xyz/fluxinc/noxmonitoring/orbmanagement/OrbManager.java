@@ -1,4 +1,4 @@
-package xyz.fluxinc.OrbManagement;
+package xyz.fluxinc.noxmonitoring.orbmanagement;
 
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
