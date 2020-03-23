@@ -1,4 +1,4 @@
-package xyz.fluxinc.noxmonitoring.poas;
+package xyz.fluxinc.noxmonitoring.adapters;
 
 import xyz.fluxinc.noxmonitoring.corba.LocalControlServerPOA;
 import xyz.fluxinc.noxmonitoring.corba.LogEntry;

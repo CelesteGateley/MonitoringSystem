@@ -8,7 +8,7 @@ import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.omg.PortableServer.POAPackage.ServantNotActive;
 import org.omg.PortableServer.POAPackage.WrongPolicy;
 import xyz.fluxinc.noxmonitoring.corba.MonitorStationHelper;
-import xyz.fluxinc.noxmonitoring.poas.MonitorStation;
+import xyz.fluxinc.noxmonitoring.adapters.MonitorStation;
 
 public class MonitorStationOrb extends OrbManager<xyz.fluxinc.noxmonitoring.corba.MonitorStation> {
 

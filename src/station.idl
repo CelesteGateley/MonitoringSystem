@@ -3,6 +3,14 @@ module xyz {
         module noxmonitoring {
             module corba {
 
+                exception IllegalSensorAccessException {
+                    string reason;
+                };
+
+                exception IllegalStationAccessException {
+                    string reason;
+                };
+
                 enum MonitorType {
                     nitrous_oxide
                 };
@@ -17,15 +25,17 @@ module xyz {
                 typedef sequence<LogEntry> LogSequence;
 
                 interface MonitorStation {
-                    MonitorTypeSequence get_available_sensors();
-                    double get_sensor_value(in MonitorType sensor);
+                    MonitorTypeSequence get_available_sensors() raises(IllegalStationAccessException);
+                    double get_sensor_value(in MonitorType sensor) raises(IllegalSensorAccessException, IllegalStationAccessException);
                     string get_location();
                     /** Extra Function - Enable/Disable Stations/Servers **/
-                    void enable_sensor(in MonitorType sensor);
-                    void enable_station();
+                    void enable_sensor(in MonitorType sensor) raises(IllegalSensorAccessException, IllegalStationAccessException);
+                    void enable_station() raises(IllegalStationAccessException);
 
-                    void disable_sensor(in MonitorType sensor);
-                    void disable_station();
+                    boolean is_disabled();
+
+                    void disable_sensor(in MonitorType sensor) raises(IllegalSensorAccessException, IllegalStationAccessException);
+                    void disable_station() raises(IllegalStationAccessException);
                 };
 
                 typedef sequence<MonitorStation> MonitorStationSequence;
