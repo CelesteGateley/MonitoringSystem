@@ -1,10 +1,12 @@
 package xyz.fluxinc.noxmonitoring.sensors;
 
+import xyz.fluxinc.noxmonitoring.corba.IllegalSensorAccessException;
+
 public abstract class Sensor {
 
     private boolean isEnabled;
 
-    public abstract double getValue();
+    public abstract double getValue() throws IllegalSensorAccessException;
     
     public boolean isEnabled() {
         return isEnabled;
@@ -18,5 +20,5 @@ public abstract class Sensor {
         isEnabled = false;
     }
 
-    public abstract void setValue(double value);
+    public abstract void setValue(double value) throws IllegalSensorAccessException;
 }
