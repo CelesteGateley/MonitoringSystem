@@ -1,3 +1,4 @@
 *.iml
 /.idea
 /src/xyz/fluxinc/noxmonitoring/corba/
+_nsdb_root

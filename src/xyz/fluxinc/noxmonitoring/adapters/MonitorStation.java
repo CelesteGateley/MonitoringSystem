@@ -7,7 +7,9 @@ import xyz.fluxinc.noxmonitoring.corba.MonitorType;
 import xyz.fluxinc.noxmonitoring.sensors.NoxSensor;
 import xyz.fluxinc.noxmonitoring.sensors.Sensor;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MonitorStation extends MonitorStationPOA {
@@ -16,11 +18,11 @@ public class MonitorStation extends MonitorStationPOA {
     private Map<MonitorType, Sensor> sensors;
     private boolean isDisabled = false;
 
-
-    private MonitorStation(String location) {
+    public MonitorStation(String location) {
         this.location = location;
         sensors = new LinkedHashMap<>();
         sensors.put(MonitorType.nitrous_oxide, new NoxSensor());
+        sensors.get(MonitorType.nitrous_oxide).enable();
     }
 
     @Override
@@ -28,7 +30,7 @@ public class MonitorStation extends MonitorStationPOA {
         if (isDisabled) {
             throw new IllegalStationAccessException("Attempt made to read value from disabled station");
         }
-        return (MonitorType[]) sensors.keySet().toArray();
+        return sensors.keySet().toArray(new MonitorType[0]);
     }
 
     @Override

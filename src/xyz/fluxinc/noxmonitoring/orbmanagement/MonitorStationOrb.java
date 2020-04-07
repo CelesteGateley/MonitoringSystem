@@ -19,6 +19,10 @@ public class MonitorStationOrb extends OrbManager<xyz.fluxinc.noxmonitoring.corb
         this.station = station;
     }
 
+    public MonitorStationOrb(String[] args) {
+        super(args);
+    }
+
     @Override
     public void bind(String name) throws ServantNotActive, WrongPolicy, CannotProceed, InvalidName, NotFound {
         Object ref = getPortableObjectAdapter().servant_to_reference(station);
