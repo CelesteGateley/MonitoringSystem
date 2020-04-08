@@ -15,7 +15,7 @@ public class RunStationServer {
     public static void main(String[] args) throws WrongPolicy, InvalidName, ServantNotActive, CannotProceed, NotFound {
         station = new MonitorStation("SOUTH_LONDON_2123");
         MonitorStationOrb orbManager = new MonitorStationOrb(args, station);
-        orbManager.bind("MS_SOUTH_LONDON_2123");
+        orbManager.bind("SOUTH_LONDON_2123");
         orbManager.runServer();
     }
 }

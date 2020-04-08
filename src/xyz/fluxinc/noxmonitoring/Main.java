@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) throws InvalidName, NotFound, CannotProceed, IllegalStationAccessException, IllegalSensorAccessException {
         MonitorStationOrb orb = new MonitorStationOrb(args);
-        MonitorStation station = orb.getObject("MS_SOUTH_LONDON_2123");
+        MonitorStation station = orb.getObject("SOUTH_LONDON_2123");
         for (MonitorType type : station.get_available_sensors()) {
             System.out.println(station.get_sensor_value(type));
         }

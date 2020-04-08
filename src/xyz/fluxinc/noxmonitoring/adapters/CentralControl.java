@@ -6,12 +6,12 @@ import xyz.fluxinc.noxmonitoring.corba.LocalControlServer;
 public class CentralControl extends CentralControlPOA {
 
     @Override
-    public void register() {
+    public void register(String location) {
 
     }
 
     @Override
-    public void deregister() {
+    public void deregister(String location) {
 
     }
 
