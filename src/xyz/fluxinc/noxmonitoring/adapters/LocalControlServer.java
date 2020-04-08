@@ -26,9 +26,9 @@ public class LocalControlServer extends LocalControlServerPOA {
     private static final long checkTime = 1000 * 60;
     private Timer timer;
 
-    public LocalControlServer(String[] args, String location, String controlServer) {
+    public LocalControlServer(MonitorStationOrb orb, String location, String controlServer) {
         stations = new ArrayList<>();
-        orb = new MonitorStationOrb(args);
+        this.orb = orb;
         logs = new ArrayList<>();
         confirmedAlarms = new ArrayList<>();
         timer = new Timer();
