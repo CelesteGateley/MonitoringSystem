@@ -1,5 +1,6 @@
 package xyz.fluxinc.noxmonitoring.adapters;
 
+import org.omg.CORBA.TRANSIENT;
 import org.omg.CosNaming.NamingContextPackage.CannotProceed;
 import org.omg.CosNaming.NamingContextPackage.InvalidName;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
@@ -23,7 +24,7 @@ public class LocalControlServer extends LocalControlServerPOA {
     private List<LogEntry> logs;
     private List<Alarm> confirmedAlarms;
     // Run Every Minute. Fine for testing purposes, but in field report every hour
-    private static final long checkTime = 1000 * 60;
+    private static final long checkTime = 1000 * 15;
     private Timer timer;
 
     public LocalControlServer(MonitorStationOrb orb, String location, String controlServer) {
@@ -31,6 +32,7 @@ public class LocalControlServer extends LocalControlServerPOA {
         this.orb = orb;
         logs = new ArrayList<>();
         confirmedAlarms = new ArrayList<>();
+        this.location = location;
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -43,11 +45,13 @@ public class LocalControlServer extends LocalControlServerPOA {
     @Override
     public void register(String location) {
         stations.add(location);
+        System.out.println("Monitor Station at " + location + " has been registered!");
     }
 
     @Override
     public void deregister(String location) {
         stations.remove(location);
+        System.out.println("Monitor Station at " + location + " has been deregistered!");
     }
 
     @Override
@@ -72,6 +76,7 @@ public class LocalControlServer extends LocalControlServerPOA {
 
     @Override
     public void report_value(MonitorStation station, MonitorType type, double sensor_value) {
+        System.out.println(station.get_location() + ": " + sensor_value + " (" + type + ")");
         logs.add(new LogEntry(station.get_location(), type, sensor_value));
         // TODO: Implement proper default valuing
         // TODO: Adjust Report Value to Fit Real Life
@@ -103,14 +108,20 @@ public class LocalControlServer extends LocalControlServerPOA {
     }
 
     public void probeValues() {
+        System.out.println("Probing Values");
         for (String station : stations) {
             try {
                 MonitorStation oStation = orb.getObject(station);
                 for (MonitorType type : oStation.get_available_sensors()) {
-                    report_value(oStation, type, oStation.get_sensor_value(type));
+                    if (oStation.is_sensor_enabled(type)) {
+                        report_value(oStation, type, oStation.get_sensor_value(type));
+                    }
                 }
-            } catch (CannotProceed | InvalidName | NotFound | IllegalStationAccessException | IllegalSensorAccessException cannotProceed) {
+            } catch (CannotProceed | InvalidName | NotFound | TRANSIENT cannotProceed) {
                 cannotProceed.printStackTrace();
+                stations.remove(station);
+            } catch (IllegalStationAccessException | IllegalSensorAccessException illegalException) {
+                illegalException.printStackTrace();
             }
         }
     }

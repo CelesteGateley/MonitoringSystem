@@ -32,7 +32,8 @@ module xyz {
                     void enable_sensor(in MonitorType sensor) raises(IllegalSensorAccessException, IllegalStationAccessException);
                     void enable_station() raises(IllegalStationAccessException);
 
-                    boolean is_disabled();
+                    boolean is_enabled();
+                    boolean is_sensor_enabled(in MonitorType sensor);
 
                     void disable_sensor(in MonitorType sensor) raises(IllegalSensorAccessException, IllegalStationAccessException);
                     void disable_station() raises(IllegalStationAccessException);

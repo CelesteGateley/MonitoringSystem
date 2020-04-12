@@ -7,16 +7,14 @@ import xyz.fluxinc.noxmonitoring.corba.MonitorType;
 import xyz.fluxinc.noxmonitoring.sensors.NoxSensor;
 import xyz.fluxinc.noxmonitoring.sensors.Sensor;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MonitorStation extends MonitorStationPOA {
 
     private String location;
     private Map<MonitorType, Sensor> sensors;
-    private boolean isDisabled = false;
+    private boolean isEnabled = true;
 
     public MonitorStation(String location) {
         this.location = location;
@@ -27,7 +25,7 @@ public class MonitorStation extends MonitorStationPOA {
 
     @Override
     public MonitorType[] get_available_sensors() throws IllegalStationAccessException {
-        if (isDisabled) {
+        if (!isEnabled) {
             throw new IllegalStationAccessException("Attempt made to read value from disabled station");
         }
         return sensors.keySet().toArray(new MonitorType[0]);
@@ -35,7 +33,7 @@ public class MonitorStation extends MonitorStationPOA {
 
     @Override
     public double get_sensor_value(MonitorType sensor) throws IllegalSensorAccessException, IllegalStationAccessException {
-        if (isDisabled) {
+        if (!isEnabled) {
             throw new IllegalStationAccessException("Attempt made to read value from disabled station");
         }
         if (!sensors.containsKey(sensor)) {
@@ -54,7 +52,7 @@ public class MonitorStation extends MonitorStationPOA {
 
     @Override
     public void enable_sensor(MonitorType sensor) throws IllegalStationAccessException, IllegalSensorAccessException {
-        if (isDisabled) {
+        if (!isEnabled) {
             throw new IllegalStationAccessException("Attempt made to enable sensor on disabled station");
         }
         if (!sensors.containsKey(sensor)) {
@@ -68,20 +66,25 @@ public class MonitorStation extends MonitorStationPOA {
 
     @Override
     public void enable_station() throws IllegalStationAccessException {
-        if (!isDisabled) {
+        if (isEnabled) {
             throw new IllegalStationAccessException("Attempt made to enable already enabled sensor");
         }
-        isDisabled = false;
+        isEnabled = false;
     }
 
     @Override
-    public boolean is_disabled() {
-        return isDisabled;
+    public boolean is_enabled() {
+        return isEnabled;
+    }
+
+    @Override
+    public boolean is_sensor_enabled(MonitorType sensor) {
+        return sensors.get(sensor).isEnabled();
     }
 
     @Override
     public void disable_sensor(MonitorType sensor) throws IllegalStationAccessException, IllegalSensorAccessException {
-        if (isDisabled) {
+        if (!isEnabled) {
             throw new IllegalStationAccessException("Attempt made to enable sensor on disabled station");
         }
         if (!sensors.containsKey(sensor)) {
@@ -95,14 +98,14 @@ public class MonitorStation extends MonitorStationPOA {
 
     @Override
     public void disable_station() throws IllegalStationAccessException {
-        if (isDisabled) {
+        if (!isEnabled) {
             throw new IllegalStationAccessException("Attempt made to disable already disabled sensor");
         }
-        isDisabled = true;
+        isEnabled = true;
     }
 
     public void setSensorValue(MonitorType type, double value) throws IllegalStationAccessException, IllegalSensorAccessException {
-        if (isDisabled) {
+        if (!isEnabled) {
             throw new IllegalStationAccessException("Attempt made to set sensor value on disabled station");
         }
         if (!sensors.containsKey(type)) {

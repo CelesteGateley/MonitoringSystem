@@ -19,6 +19,7 @@ public class CentralControl extends CentralControlPOA {
         serverList = new ArrayList<>();
     }
 
+    public List<String> getServerList() { return serverList; }
 
     @Override
     public void register(String location) {
