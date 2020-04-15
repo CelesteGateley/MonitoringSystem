@@ -9,6 +9,7 @@ import org.omg.PortableServer.POAPackage.WrongPolicy;
 import xyz.fluxinc.noxmonitoring.adapters.MonitorStation;
 import xyz.fluxinc.noxmonitoring.corba.IllegalSensorAccessException;
 import xyz.fluxinc.noxmonitoring.corba.IllegalStationAccessException;
+import xyz.fluxinc.noxmonitoring.corba.LocalControlServer;
 import xyz.fluxinc.noxmonitoring.corba.MonitorType;
 import xyz.fluxinc.noxmonitoring.orbmanagement.LocalServerOrb;
 import xyz.fluxinc.noxmonitoring.orbmanagement.MonitorStationOrb;
@@ -27,7 +28,7 @@ public class RunMonitorStation extends Thread{
     public static void main(String[] args) {
         argsS = args;
         argsMap = getArgs(args);
-        if (!((boolean) argsMap.get("nogui"))) {
+        if (!((boolean) argsMap.get("nogui")) && !((boolean) argsMap.get("noquestion"))) {
             argsMap.put("location", JOptionPane.showInputDialog(null, "Please enter the location of the monitor station", "Enter Location Name", JOptionPane.QUESTION_MESSAGE));
             argsMap.put("server", JOptionPane.showInputDialog(null, "Please enter the server for the monitor station", "Enter Server Name", JOptionPane.QUESTION_MESSAGE));
         }
@@ -39,6 +40,7 @@ public class RunMonitorStation extends Thread{
             frame = new JFrame("Sensor Value Control (" + argsMap.get("location") + ")");
             frame.setSize(500, 100);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLocation((Integer) argsMap.get("x"), (Integer) argsMap.get("y"));
             JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 200, 0);
             slider.setMajorTickSpacing(25);
             slider.setMinorTickSpacing(5);
@@ -67,10 +69,16 @@ public class RunMonitorStation extends Thread{
         List<String> argsList = Arrays.asList(args);
 
         argsMap.put("nogui", argsList.contains("-nogui"));
+        argsMap.put("noquestion", argsList.contains("-noquestion"));
         String serverName = argsList.contains("-server") ? argsList.get(argsList.indexOf("-server") + 1) : "DEFAULT";
         argsMap.put("server", serverName);
         String locationName = argsList.contains("-location") ? argsList.get(argsList.indexOf("-location") + 1) : "DEFAULT";
         argsMap.put("location", locationName);
+        int x = argsList.contains("-x") ? Integer.parseInt(argsList.get(argsList.indexOf("-x") + 1)) : 0;
+        int y = argsList.contains("-y") ? Integer.parseInt(argsList.get(argsList.indexOf("-y") + 1)) : 0;
+        // TODO: Switch Back. CBA changing all the run configurations
+        argsMap.put("x", y+100);
+        argsMap.put("y", x+50);
 
         return argsMap;
     }
@@ -83,7 +91,9 @@ public class RunMonitorStation extends Thread{
         Runtime.getRuntime().addShutdownHook(new ShutdownHook((String) argsMap.get("location"), (String) argsMap.get("server"), serverOrb));
         try {
             orb.bind((String) argsMap.get("location"));
-            serverOrb.getObject((String) argsMap.get("server")).register((String) argsMap.get("location"));
+            LocalControlServer server = serverOrb.getObject((String) argsMap.get("server"));
+            server.register((String) argsMap.get("location"));
+            station.assignServer(server);
         } catch (CannotProceed | InvalidName | NotFound | ServantNotActive | WrongPolicy | TRANSIENT cannotProceed) {
             cannotProceed.printStackTrace();
         }
@@ -107,9 +117,7 @@ public class RunMonitorStation extends Thread{
             super.run();
             try {
                 orb.getObject(server).deregister(location);
-            } catch (CannotProceed | InvalidName | NotFound cannotProceed) {
-                cannotProceed.printStackTrace();
-            }
+            } catch (CannotProceed | InvalidName | NotFound ignored) {}
         }
     }
 }

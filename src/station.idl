@@ -16,6 +16,7 @@ module xyz {
                 };
 
                 struct LogEntry {
+                    long long timestamp;
                     string location;
                     MonitorType type;
                     double value;
@@ -46,14 +47,14 @@ module xyz {
                     void deregister(in string location);
                     string get_location();
                     MonitorStationSequence get_available_stations();
-                    void report_value(in MonitorStation station, in MonitorType type, in double sensor_value);
+                    void report_value(in string location, in MonitorType type, in double sensor_value);
                     LogSequence get_logs();
                 };
 
                 interface CentralControl {
                     void register(in string location);
                     void deregister(in string location);
-                    void confirmed_alarm(in LocalControlServer server);
+                    void confirmed_alarm(in string location);
                 };
             };
         };

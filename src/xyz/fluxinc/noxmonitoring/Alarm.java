@@ -12,7 +12,7 @@ public class Alarm {
     private double value;
 
     public Alarm(String location, MonitorType type, double value) {
-        timestamp = Instant.now().getEpochSecond();
+        timestamp = System.currentTimeMillis();
         this.location = location;
         this.type = type;
         this.value = value;
@@ -25,4 +25,18 @@ public class Alarm {
     public double getValue() { return value; }
 
     public String getLocation() { return location; }
+
+    public static double getAmberAlarm(MonitorType type) {
+        if (type == MonitorType.nitrous_oxide) {
+            return 50.0;
+        }
+        return 0.0;
+    }
+
+    public static double getRedAlarm(MonitorType type) {
+        if (type == MonitorType.nitrous_oxide) {
+            return 100.0;
+        }
+        return 0.0;
+    }
 }

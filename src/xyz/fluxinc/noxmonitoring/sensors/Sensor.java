@@ -1,6 +1,7 @@
 package xyz.fluxinc.noxmonitoring.sensors;
 
 import xyz.fluxinc.noxmonitoring.corba.IllegalSensorAccessException;
+import xyz.fluxinc.noxmonitoring.corba.MonitorType;
 
 public abstract class Sensor {
 
@@ -21,4 +22,11 @@ public abstract class Sensor {
     }
 
     public abstract void setValue(double value) throws IllegalSensorAccessException;
+
+    public static double getMaximumValue(MonitorType type) {
+        if (type == MonitorType.nitrous_oxide) {
+            return 100;
+        }
+        return 1;
+    }
 }
