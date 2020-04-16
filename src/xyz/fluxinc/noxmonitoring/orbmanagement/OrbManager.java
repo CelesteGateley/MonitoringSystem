@@ -50,15 +50,25 @@ public abstract class OrbManager<T> {
 
     public abstract T getObject(String name) throws CannotProceed, InvalidName, NotFound;
 
-    public ORB getOrb() { return orb; }
+    public ORB getOrb() {
+        return orb;
+    }
 
-    public Object getNameServiceObject() { return nameServiceObject; }
+    public Object getNameServiceObject() {
+        return nameServiceObject;
+    }
 
-    public NamingContextExt getNamingContextExt() { return namingContextExt; }
+    public NamingContextExt getNamingContextExt() {
+        return namingContextExt;
+    }
 
-    public POA getPortableObjectAdapter() { return portableObjectAdapter; }
+    public POA getPortableObjectAdapter() {
+        return portableObjectAdapter;
+    }
 
-    public void runServer() { orb.run(); }
+    public void runServer() {
+        orb.run();
+    }
 
 
 }

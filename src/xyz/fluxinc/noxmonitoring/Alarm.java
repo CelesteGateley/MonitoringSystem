@@ -2,14 +2,12 @@ package xyz.fluxinc.noxmonitoring;
 
 import xyz.fluxinc.noxmonitoring.corba.MonitorType;
 
-import java.time.Instant;
-
 public class Alarm {
 
-    private long timestamp;
-    private String location;
-    private MonitorType type;
-    private double value;
+    private final long timestamp;
+    private final String location;
+    private final MonitorType type;
+    private final double value;
 
     public Alarm(String location, MonitorType type, double value) {
         timestamp = System.currentTimeMillis();
@@ -18,13 +16,21 @@ public class Alarm {
         this.value = value;
     }
 
-    public long getTimestamp() { return timestamp; }
+    public long getTimestamp() {
+        return timestamp;
+    }
 
-    public MonitorType getType() { return type; }
+    public MonitorType getType() {
+        return type;
+    }
 
-    public double getValue() { return value; }
+    public double getValue() {
+        return value;
+    }
 
-    public String getLocation() { return location; }
+    public String getLocation() {
+        return location;
+    }
 
     public static double getAmberAlarm(MonitorType type) {
         if (type == MonitorType.nitrous_oxide) {

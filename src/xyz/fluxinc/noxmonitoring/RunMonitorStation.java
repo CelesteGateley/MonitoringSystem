@@ -16,9 +16,12 @@ import xyz.fluxinc.noxmonitoring.orbmanagement.MonitorStationOrb;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class RunMonitorStation extends Thread{
+public class RunMonitorStation extends Thread {
 
     private static MonitorStation station;
     private static String[] argsS;
@@ -77,8 +80,8 @@ public class RunMonitorStation extends Thread{
         int x = argsList.contains("-x") ? Integer.parseInt(argsList.get(argsList.indexOf("-x") + 1)) : 0;
         int y = argsList.contains("-y") ? Integer.parseInt(argsList.get(argsList.indexOf("-y") + 1)) : 0;
         // TODO: Switch Back. CBA changing all the run configurations
-        argsMap.put("x", y+100);
-        argsMap.put("y", x+50);
+        argsMap.put("x", y + 100);
+        argsMap.put("y", x + 50);
 
         return argsMap;
     }
@@ -117,7 +120,8 @@ public class RunMonitorStation extends Thread{
             super.run();
             try {
                 orb.getObject(server).deregister(location);
-            } catch (CannotProceed | InvalidName | NotFound ignored) {}
+            } catch (CannotProceed | InvalidName | NotFound ignored) {
+            }
         }
     }
 }

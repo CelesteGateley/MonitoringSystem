@@ -52,16 +52,15 @@ public class ControlScreenController {
             }
             stationsByServer.put(server, stations);
         }
-        for (String server : stationsByServer.keySet()) {
-            System.out.println(server);
-        }
     }
 
     @FXML
     public void updateStationList() {
         String server = fxLocalServerList.getSelectionModel().getSelectedItem();
         stationList.clear();
-        stationList.addAll(stationsByServer.get(server));
+        if (stationsByServer.get(server) != null) {
+            stationList.addAll(stationsByServer.get(server));
+        }
     }
 
     @FXML
@@ -86,7 +85,7 @@ public class ControlScreenController {
                 view.setItems(entryByType.get(type));
                 TableColumn<LogEntry, String> timeStampCol = new TableColumn<>("Timestamp");
                 timeStampCol.setCellValueFactory(cellData -> timeStampToDate(cellData.getValue().timestamp));
-                TableColumn<LogEntry, String>  valueColumn = new TableColumn<>("Value");
+                TableColumn<LogEntry, String> valueColumn = new TableColumn<>("Value");
                 valueColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(String.valueOf(cellData.getValue().value)));
                 view.getColumns().addAll(timeStampCol, valueColumn);
 

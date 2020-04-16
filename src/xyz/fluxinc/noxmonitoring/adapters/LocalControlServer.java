@@ -5,13 +5,12 @@ import org.omg.CosNaming.NamingContextPackage.CannotProceed;
 import org.omg.CosNaming.NamingContextPackage.InvalidName;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
 import xyz.fluxinc.noxmonitoring.Alarm;
-import xyz.fluxinc.noxmonitoring.corba.*;
 import xyz.fluxinc.noxmonitoring.corba.CentralControl;
 import xyz.fluxinc.noxmonitoring.corba.MonitorStation;
+import xyz.fluxinc.noxmonitoring.corba.*;
 import xyz.fluxinc.noxmonitoring.orbmanagement.CentralControlOrb;
 import xyz.fluxinc.noxmonitoring.orbmanagement.MonitorStationOrb;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -19,13 +18,13 @@ import java.util.TimerTask;
 
 public class LocalControlServer extends LocalControlServerPOA {
 
-    private String controlServer;
-    private CentralControlOrb centralControlOrb;
-    private List<String> stations;
-    private MonitorStationOrb orb;
-    private String location;
-    private List<LogEntry> logs;
-    private List<Alarm> confirmedAlarms;
+    private final String controlServer;
+    private final CentralControlOrb centralControlOrb;
+    private final List<String> stations;
+    private final MonitorStationOrb orb;
+    private final String location;
+    private final List<LogEntry> logs;
+    private final List<Alarm> confirmedAlarms;
     // Run Every Minute. Fine for testing purposes, but in field report every hour
     private static final long checkTime = 1000 * 60;
 
@@ -60,15 +59,19 @@ public class LocalControlServer extends LocalControlServerPOA {
     }
 
     @Override
-    public String get_location() { return location; }
+    public String get_location() {
+        return location;
+    }
 
     @Override
-    public MonitorStation[] get_available_stations(){
+    public MonitorStation[] get_available_stations() {
         List<MonitorStation> oStations = new ArrayList<>();
         for (String location : stations) {
             try {
                 MonitorStation station = orb.getObject(location);
-                if (station == null) { continue; }
+                if (station == null) {
+                    continue;
+                }
                 oStations.add(station);
             } catch (CannotProceed | InvalidName | NotFound cannotProceed) {
                 cannotProceed.printStackTrace();
@@ -113,7 +116,9 @@ public class LocalControlServer extends LocalControlServerPOA {
     }
 
     @Override
-    public LogEntry[] get_logs() { return logs.toArray(LogEntry[]::new); }
+    public LogEntry[] get_logs() {
+        return logs.toArray(LogEntry[]::new);
+    }
 
     public void probeValues() {
         System.out.println("Probing Values");

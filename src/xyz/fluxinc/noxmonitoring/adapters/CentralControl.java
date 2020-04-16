@@ -11,13 +11,12 @@ import xyz.fluxinc.noxmonitoring.orbmanagement.LocalServerOrb;
 import xyz.fluxinc.noxmonitoring.resources.ControlScreenController;
 
 import java.util.*;
-import java.util.spi.LocaleServiceProvider;
 
 public class CentralControl extends CentralControlPOA {
 
-    private LocalServerOrb serverOrb;
-    private List<String> serverList;
-    private ControlScreenController controlScreenController;
+    private final LocalServerOrb serverOrb;
+    private final List<String> serverList;
+    private final ControlScreenController controlScreenController;
     private static final long probeTime = 1000 * 30;
 
     public CentralControl(LocalServerOrb serverOrb, ControlScreenController controlScreenController) {
@@ -33,7 +32,9 @@ public class CentralControl extends CentralControlPOA {
         }, 1000, probeTime);
     }
 
-    public List<String> getServerList() { return serverList; }
+    public List<String> getServerList() {
+        return serverList;
+    }
 
     @Override
     public void register(String location) {
@@ -41,8 +42,6 @@ public class CentralControl extends CentralControlPOA {
         System.out.println("Local Server Registered: " + location);
         if (controlScreenController != null) {
             updateUI();
-        } else {
-            System.out.println("Control Screen Controller is null");
         }
     }
 

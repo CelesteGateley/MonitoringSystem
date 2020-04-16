@@ -55,7 +55,7 @@ public class RunControlServer extends Application {
         CentralControlOrb controlOrb = new CentralControlOrb(staticArgs, centralControl);
         RunControlServerThread controlThread = new RunControlServerThread(controlOrb, (String) argsMap.get("location"));
         controlThread.start();
-        
+
     }
 
     public static Parent loadFXML(String fxml) throws IOException {
@@ -69,8 +69,8 @@ public class RunControlServer extends Application {
 
     private static class RunControlServerThread extends Thread {
 
-        private CentralControlOrb centralControlOrb;
-        private String serverName;
+        private final CentralControlOrb centralControlOrb;
+        private final String serverName;
 
         public RunControlServerThread(CentralControlOrb centralControlOrb, String serverName) {
             this.centralControlOrb = centralControlOrb;

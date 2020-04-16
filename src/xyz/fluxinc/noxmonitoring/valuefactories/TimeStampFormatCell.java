@@ -4,14 +4,10 @@ import javafx.scene.control.TableCell;
 import xyz.fluxinc.noxmonitoring.Alarm;
 import xyz.fluxinc.noxmonitoring.corba.LogEntry;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 public class TimeStampFormatCell extends TableCell<Object, LogEntry> {
 
-    public TimeStampFormatCell() {}
+    public TimeStampFormatCell() {
+    }
 
     @Override
     protected void updateItem(LogEntry entry, boolean isEmpty) {
