@@ -55,15 +55,7 @@ public class CentralControl extends CentralControlPOA {
 
     @Override
     public void confirmed_alarm(String location) {
-        try {
-            LocalControlServer server = serverOrb.getObject(location);
-            for (LogEntry entry : server.get_logs()) {
-                System.out.println(entry.location + ": (" + entry.type.toString() + ") " + entry.value);
-            }
-            updateUI();
-        } catch (CannotProceed | InvalidName | NotFound cannotProceed) {
-            cannotProceed.printStackTrace();
-        }
+        updateUI();
     }
 
     private Map<String, LogEntry[]> getAllLogs() {

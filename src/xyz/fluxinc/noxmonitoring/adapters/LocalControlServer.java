@@ -25,8 +25,8 @@ public class LocalControlServer extends LocalControlServerPOA {
     private final String location;
     private final List<LogEntry> logs;
     private final List<Alarm> confirmedAlarms;
-    // Run Every Minute. Fine for testing purposes, but in field report every hour
-    private static final long checkTime = 1000 * 60;
+    // Run 15s. Fine for testing purposes, but in field report every hour
+    private static final long checkTime = 1000 * 15;
 
     public LocalControlServer(MonitorStationOrb orb, CentralControlOrb centralControlOrb, String location, String controlServer) {
         stations = new ArrayList<>();
@@ -49,6 +49,24 @@ public class LocalControlServer extends LocalControlServerPOA {
     @Override
     public void register(String location) {
         stations.add(location);
+        try {
+            MonitorStation station = orb.getObject(location);
+            if (station.is_enabled()) {
+                for (MonitorType type : station.get_available_sensors()) {
+                    if (station.is_sensor_enabled(type)) {
+                        LogEntry entry = new LogEntry();
+                        entry.timestamp = System.currentTimeMillis();
+                        entry.location = location;
+                        entry.type = type;
+                        entry.value = station.get_sensor_value(type);
+                        logs.add(entry);
+                    }
+                }
+            }
+        } catch (CannotProceed | InvalidName | NotFound | IllegalStationAccessException | IllegalSensorAccessException cannotProceed) {
+            cannotProceed.printStackTrace();
+        }
+
         System.out.println("Monitor Station at " + location + " has been registered!");
     }
 
