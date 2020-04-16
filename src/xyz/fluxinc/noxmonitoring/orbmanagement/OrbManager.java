@@ -37,10 +37,6 @@ public abstract class OrbManager<T> {
             // Use NamingContextExt which is part of the Interoperable
             // Naming Service (INS) specification.
             namingContextExt = NamingContextExtHelper.narrow(nameServiceObject);
-            if (namingContextExt == null) {
-                System.out.println("nameService = null");
-                return;
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

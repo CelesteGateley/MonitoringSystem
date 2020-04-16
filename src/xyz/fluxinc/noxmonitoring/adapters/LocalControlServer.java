@@ -86,9 +86,7 @@ public class LocalControlServer extends LocalControlServerPOA {
             MonitorStation station = orb.getObject(location);
             System.out.println(station.get_location() + ": " + sensor_value + " (" + type + ")");
             logs.add(new LogEntry(System.currentTimeMillis(), station.get_location(), type, sensor_value));
-            // TODO: Implement proper default valuing
-            // TODO: Adjust Report Value to Fit Real Life
-            if (sensor_value > 100) {
+            if (sensor_value > Alarm.getRedAlarm(type)) {
                 confirmedAlarms.add(new Alarm(station.get_location(), type, sensor_value));
                 int alarmCount = 0;
                 // Saves constantly checking the time each time, and a couple seconds margin of error on expiring alerts is acceptable

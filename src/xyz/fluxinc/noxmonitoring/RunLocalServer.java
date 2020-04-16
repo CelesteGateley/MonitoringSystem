@@ -18,7 +18,7 @@ public class RunLocalServer extends Thread {
     private static LocalServerOrb orb;
     private static Map<String, Object> argsMap;
 
-    public static void main(String[] args) throws WrongPolicy, InvalidName, ServantNotActive, CannotProceed, NotFound {
+    public static void main(String[] args) throws InvalidName, CannotProceed, NotFound {
         argsMap = RunMonitorStation.getArgs(args);
         if (!((boolean) argsMap.get("nogui"))) {
             argsMap.put("location", JOptionPane.showInputDialog(null, "Please enter the location of the monitor station", "Enter Location Name", JOptionPane.QUESTION_MESSAGE));

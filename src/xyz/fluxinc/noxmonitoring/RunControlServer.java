@@ -23,7 +23,6 @@ import java.util.Map;
 
 public class RunControlServer extends Application {
 
-    private static Scene scene;
     public static Stage stage;
     private static ControlScreenController controlScreenController;
     private static String[] staticArgs;
@@ -40,7 +39,7 @@ public class RunControlServer extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("ControlScreen"));
+        Scene scene = new Scene(loadFXML("ControlScreen"));
         RunControlServer.stage = stage;
         stage.setScene(scene);
         stage.setTitle("Test");

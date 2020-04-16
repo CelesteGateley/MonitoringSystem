@@ -80,8 +80,6 @@ public class CentralControl extends CentralControlPOA {
 
     private void updateUI() {
         Map<String, LogEntry[]> logs = getAllLogs();
-        Platform.runLater(() -> {
-            controlScreenController.updateServerList(logs);
-        });
+        Platform.runLater(() -> controlScreenController.updateServerList(logs));
     }
 }

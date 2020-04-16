@@ -26,7 +26,6 @@ public class RunMonitorStation extends Thread {
     private static MonitorStation station;
     private static String[] argsS;
     private static Map<String, Object> argsMap;
-    private static JFrame frame;
 
     public static void main(String[] args) {
         argsS = args;
@@ -40,7 +39,7 @@ public class RunMonitorStation extends Thread {
         Thread thread = new RunMonitorStation();
         thread.start();
         if (!((boolean) argsMap.get("nogui"))) {
-            frame = new JFrame("Sensor Value Control (" + argsMap.get("location") + ")");
+            JFrame frame = new JFrame("Sensor Value Control (" + argsMap.get("location") + ")");
             frame.setSize(500, 100);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setLocation((Integer) argsMap.get("x"), (Integer) argsMap.get("y"));
