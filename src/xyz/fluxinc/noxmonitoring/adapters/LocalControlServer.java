@@ -99,7 +99,7 @@ public class LocalControlServer extends LocalControlServerPOA {
             logs.add(new LogEntry(System.currentTimeMillis(), station.get_location(), type, sensor_value));
             if (sensor_value > Alarm.getRedAlarm(type)) {
                 confirmedAlarms.add(new Alarm(station.get_location(), type, sensor_value));
-                int alarmCount = 0;
+                int alarmCount = 1;
                 // Saves constantly checking the time each time, and a couple seconds margin of error on expiring alerts is acceptable
                 long currentTime = System.currentTimeMillis();
                 String currentAlarmLocation = station.get_location();
