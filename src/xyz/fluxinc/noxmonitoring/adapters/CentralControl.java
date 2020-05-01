@@ -4,9 +4,9 @@ import javafx.application.Platform;
 import org.omg.CosNaming.NamingContextPackage.CannotProceed;
 import org.omg.CosNaming.NamingContextPackage.InvalidName;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
-import xyz.fluxinc.noxmonitoring.corba.CentralControlPOA;
+import xyz.fluxinc.noxmonitoring.Alarm;
+import xyz.fluxinc.noxmonitoring.corba.*;
 import xyz.fluxinc.noxmonitoring.corba.LocalControlServer;
-import xyz.fluxinc.noxmonitoring.corba.LogEntry;
 import xyz.fluxinc.noxmonitoring.corba.MonitorStation;
 import xyz.fluxinc.noxmonitoring.orbmanagement.LocalServerOrb;
 import xyz.fluxinc.noxmonitoring.resources.ControlScreenController;
@@ -67,7 +67,8 @@ public class CentralControl extends CentralControlPOA {
     }
 
     @Override
-    public void confirmed_alarm(String location) {
+    public void confirmed_alarm(String location, MonitorType type) {
+        Platform.runLater(() -> controlScreenController.addAlarm(new Alarm(location, type, System.currentTimeMillis())));
         updateUI();
     }
 

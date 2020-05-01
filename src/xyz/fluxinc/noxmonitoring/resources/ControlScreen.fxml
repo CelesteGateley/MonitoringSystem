@@ -16,6 +16,7 @@
              <MenuItem mnemonicParsing="false" onAction="#updateServerList" text="Update UI" />
            </items>
          </Menu>
+         <Menu fx:id="fxNotificationMenu" mnemonicParsing="false" text="Notifications" />
       </menus>
    </MenuBar>
     <GridPane gridLinesVisible="true" GridPane.rowIndex="1">

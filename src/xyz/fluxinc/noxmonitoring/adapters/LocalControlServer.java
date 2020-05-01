@@ -11,10 +11,7 @@ import xyz.fluxinc.noxmonitoring.corba.*;
 import xyz.fluxinc.noxmonitoring.orbmanagement.CentralControlOrb;
 import xyz.fluxinc.noxmonitoring.orbmanagement.MonitorStationOrb;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class LocalControlServer extends LocalControlServerPOA {
 
@@ -25,6 +22,7 @@ public class LocalControlServer extends LocalControlServerPOA {
     private final String location;
     private final List<LogEntry> logs;
     private final List<Alarm> confirmedAlarms;
+    private final Map<MonitorType, Long> sentAlarmTimes;
     // Run 15s. Fine for testing purposes, but in field report every hour
     private static final long checkTime = 1000 * 15;
 
@@ -44,6 +42,7 @@ public class LocalControlServer extends LocalControlServerPOA {
             }
         }, 1000, checkTime);
 
+        sentAlarmTimes = new LinkedHashMap<>();
     }
 
     @Override
@@ -116,8 +115,12 @@ public class LocalControlServer extends LocalControlServerPOA {
                     }
                 }
                 if (alarmCount > 2) {
-                    CentralControl centralControl = centralControlOrb.getObject(controlServer);
-                    centralControl.confirmed_alarm(this.location);
+                    // Only send an alarm once every 10 minutes
+                    if (!sentAlarmTimes.containsKey(type) || sentAlarmTimes.get(type) > System.currentTimeMillis() + (1000 * 60 * 10)) {
+                        CentralControl centralControl = centralControlOrb.getObject(controlServer);
+                        centralControl.confirmed_alarm(this.location, type);
+                        sentAlarmTimes.put(type, System.currentTimeMillis());
+                    }
                 }
             }
         } catch (CannotProceed | InvalidName | NotFound cannotProceed) {
@@ -136,16 +139,14 @@ public class LocalControlServer extends LocalControlServerPOA {
             try {
                 MonitorStation oStation = orb.getObject(station);
                 for (MonitorType type : oStation.get_available_sensors()) {
-                    if (oStation.is_sensor_enabled(type)) {
+                    if (oStation.is_sensor_enabled(type) && oStation.is_enabled()) {
                         report_value(oStation.get_location(), type, oStation.get_sensor_value(type));
                     }
                 }
             } catch (CannotProceed | InvalidName | NotFound | TRANSIENT cannotProceed) {
                 cannotProceed.printStackTrace();
                 stations.remove(station);
-            } catch (IllegalStationAccessException | IllegalSensorAccessException illegalException) {
-                illegalException.printStackTrace();
-            }
+            } catch (IllegalStationAccessException | IllegalSensorAccessException ignored) { }
         }
     }
 }

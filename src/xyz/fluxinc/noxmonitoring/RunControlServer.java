@@ -46,7 +46,7 @@ public class RunControlServer extends Application {
         Scene scene = new Scene(loadFXML("ControlScreen"));
         RunControlServer.stage = stage;
         stage.setScene(scene);
-        stage.setTitle("Test");
+        stage.setTitle("Control Server (" + argsMap.get("location") + ")");
         stage.show();
         stage.setOnCloseRequest((WindowEvent event) -> {
             Platform.exit();

@@ -3,11 +3,13 @@ package xyz.fluxinc.noxmonitoring.resources;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.omg.CosNaming.NamingContextPackage.CannotProceed;
 import org.omg.CosNaming.NamingContextPackage.InvalidName;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
+import xyz.fluxinc.noxmonitoring.Alarm;
 import xyz.fluxinc.noxmonitoring.RunControlServer;
 import xyz.fluxinc.noxmonitoring.corba.IllegalStationAccessException;
 import xyz.fluxinc.noxmonitoring.corba.LogEntry;
@@ -21,6 +23,7 @@ import java.util.*;
 public class ControlScreenController {
 
     public TabPane fxStationTabMenu;
+    public Menu fxNotificationMenu;
     public Label fxMonitorStationMaxName;
     public ListView<String> fxLocalServerList;
     public ListView<String> fxStationList;
@@ -39,6 +42,7 @@ public class ControlScreenController {
         stationList = FXCollections.observableList(new ArrayList<>());
         fxLocalServerList.setItems(localServerList);
         fxStationList.setItems(stationList);
+        updateNotificationCount();
     }
 
     @FXML
@@ -143,6 +147,25 @@ public class ControlScreenController {
         } catch (CannotProceed | InvalidName | NotFound | IllegalStationAccessException cannotProceed) {
             cannotProceed.printStackTrace();
         }
+    }
+
+    @FXML
+    public void addAlarm(Alarm alarm) {
+        MenuItem newItem = new MenuItem(alarm.getLocation());
+        newItem.setOnAction((ActionEvent event) -> {
+            fxNotificationMenu.getItems().remove(newItem);
+            if (fxLocalServerList.getItems().contains(alarm.getLocation())) {
+                fxLocalServerList.getSelectionModel().select(fxLocalServerList.getItems().indexOf(alarm.getLocation()));
+                updateStationList();
+            }
+            updateNotificationCount();
+        });
+        fxNotificationMenu.getItems().add(newItem);
+        updateNotificationCount();
+    }
+
+    private void updateNotificationCount() {
+        fxNotificationMenu.setText("Notifications (" + fxNotificationMenu.getItems().size() + ")");
     }
 
     private ReadOnlyStringWrapper timeStampToDate(long timeStamp) {

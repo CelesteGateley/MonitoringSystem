@@ -55,7 +55,7 @@ module xyz {
                     void register(in string location);
                     void deregister(in string location);
                     void update_stations(in string location);
-                    void confirmed_alarm(in string location);
+                    void confirmed_alarm(in string location, in MonitorType type);
                 };
             };
         };

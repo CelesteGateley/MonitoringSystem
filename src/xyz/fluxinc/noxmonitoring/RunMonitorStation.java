@@ -1,5 +1,6 @@
 package xyz.fluxinc.noxmonitoring;
 
+import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.TRANSIENT;
 import org.omg.CosNaming.NamingContextPackage.CannotProceed;
 import org.omg.CosNaming.NamingContextPackage.InvalidName;
@@ -119,7 +120,7 @@ public class RunMonitorStation extends Thread {
             super.run();
             try {
                 orb.getObject(server).deregister(location);
-            } catch (CannotProceed | InvalidName | NotFound ignored) {
+            } catch (CannotProceed | InvalidName | NotFound | COMM_FAILURE ignored) {
             }
         }
     }
