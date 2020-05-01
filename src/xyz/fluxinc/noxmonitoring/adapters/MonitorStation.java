@@ -1,5 +1,6 @@
 package xyz.fluxinc.noxmonitoring.adapters;
 
+import xyz.fluxinc.noxmonitoring.Alarm;
 import xyz.fluxinc.noxmonitoring.corba.LocalControlServer;
 import xyz.fluxinc.noxmonitoring.corba.*;
 import xyz.fluxinc.noxmonitoring.sensors.NoxSensor;
@@ -118,7 +119,7 @@ public class MonitorStation extends MonitorStationPOA {
             throw new IllegalSensorAccessException("Attempt made to set sensor value on disabled sensor");
         }
         sensors.get(type).setValue(value);
-        if (server != null) {
+        if (server != null && value >= Alarm.getRedAlarm(type)) {
             server.report_value(this.location, type, value);
         }
     }

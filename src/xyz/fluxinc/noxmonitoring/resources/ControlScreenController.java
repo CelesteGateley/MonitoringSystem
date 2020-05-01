@@ -5,8 +5,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.omg.CosNaming.NamingContextPackage.CannotProceed;
+import org.omg.CosNaming.NamingContextPackage.InvalidName;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 import xyz.fluxinc.noxmonitoring.RunControlServer;
+import xyz.fluxinc.noxmonitoring.corba.IllegalStationAccessException;
 import xyz.fluxinc.noxmonitoring.corba.LogEntry;
+import xyz.fluxinc.noxmonitoring.corba.MonitorStation;
 import xyz.fluxinc.noxmonitoring.corba.MonitorType;
 
 import java.text.DateFormat;
@@ -19,6 +24,7 @@ public class ControlScreenController {
     public Label fxMonitorStationMaxName;
     public ListView<String> fxLocalServerList;
     public ListView<String> fxStationList;
+    public Button fxEnableDisableButton;
     private ObservableList<String> localServerList;
     private ObservableList<String> stationList;
     private Map<String, List<String>> stationsByServer;
@@ -36,22 +42,40 @@ public class ControlScreenController {
     }
 
     @FXML
-    public void updateServerList(Map<String, LogEntry[]> logs) {
-        stationsByServer = new LinkedHashMap<>();
+    public void updateServerList() {
+        localServerList.clear();
+        for (String server : stationsByServer.keySet()) {
+            List<String> stationList = new ArrayList<>();
+            localServerList.add(server);
+            stationsByServer.put(server, stationList);
+        }
+        fxLocalServerList.refresh();
+        fxStationList.refresh();
+    }
+
+    @FXML
+    public void updateServerList(Map<String, LogEntry[]> logs, Map<String, List<String>> stations) {
+        stationsByServer = stations;
         entriesByStation = new LinkedHashMap<>();
         localServerList.clear();
-        for (String server : logs.keySet()) {
-            List<String> stations = new ArrayList<>();
+        for (String server : stationsByServer.keySet()) {
+            List<String> stationList = new ArrayList<>();
             localServerList.add(server);
             for (LogEntry log : logs.get(server)) {
-                if (!stations.contains(log.location)) {
-                    stations.add(log.location);
+                if (!stationList.contains(log.location)) {
+                    stationList.add(log.location);
                     entriesByStation.putIfAbsent(log.location, new ArrayList<>());
                 }
                 entriesByStation.get(log.location).add(log);
             }
-            stationsByServer.put(server, stations);
+            stationsByServer.put(server, stationList);
         }
+        fxLocalServerList.refresh();
+    }
+
+    public void updateServerList(Map<String, List<String>> stations) {
+        stationsByServer = stations;
+        updateServerList();
     }
 
     @FXML
@@ -61,13 +85,22 @@ public class ControlScreenController {
         if (stationsByServer.get(server) != null) {
             stationList.addAll(stationsByServer.get(server));
         }
+        fxLocalServerList.refresh();
     }
 
     @FXML
     public void showInformation() {
         String station = fxStationList.getSelectionModel().getSelectedItem();
+        if (station == null) { return; }
         fxMonitorStationMaxName.setText(station);
         List<LogEntry> entries = entriesByStation.get(station);
+        fxEnableDisableButton.setVisible(true);
+        try {
+            MonitorStation stationObj = RunControlServer.getMonitorStationOrb().getObject(station);
+            fxEnableDisableButton.setText(stationObj.is_enabled() ? "Disable" : "Enable");
+        } catch (CannotProceed | InvalidName | NotFound cannotProceed) {
+            cannotProceed.printStackTrace();
+        }
         if (entries != null) {
             entries.sort(Comparator.comparingLong(logEntry -> logEntry.timestamp));
             Map<MonitorType, ObservableList<LogEntry>> entryByType = new LinkedHashMap<>();
@@ -77,7 +110,6 @@ public class ControlScreenController {
                 }
                 entryByType.get(entry.type).add(entry);
             }
-
             for (MonitorType type : entryByType.keySet()) {
                 fxStationTabMenu.getTabs().clear();
                 Tab tab = new Tab(type.toString());
@@ -92,6 +124,24 @@ public class ControlScreenController {
                 tab.setContent(view);
                 fxStationTabMenu.getTabs().add(tab);
             }
+        }
+        fxLocalServerList.refresh();
+    }
+
+    @FXML
+    public void toggleStation() {
+        String station = fxStationList.getSelectionModel().getSelectedItem();
+        if (station == null) { return; }
+        try {
+            MonitorStation stationObj = RunControlServer.getMonitorStationOrb().getObject(station);
+            if (stationObj.is_enabled()) {
+                stationObj.disable_station();
+            } else {
+                stationObj.enable_station();
+            }
+            fxEnableDisableButton.setText(stationObj.is_enabled() ? "Disable" : "Enable");
+        } catch (CannotProceed | InvalidName | NotFound | IllegalStationAccessException cannotProceed) {
+            cannotProceed.printStackTrace();
         }
     }
 

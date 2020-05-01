@@ -40,13 +40,13 @@ module xyz {
                     void disable_station() raises(IllegalStationAccessException);
                 };
 
-                typedef sequence<MonitorStation> MonitorStationSequence;
+                typedef sequence<string> StringSequence;
 
                 interface LocalControlServer {
                     void register(in string location);
                     void deregister(in string location);
                     string get_location();
-                    MonitorStationSequence get_available_stations();
+                    StringSequence get_available_stations();
                     void report_value(in string location, in MonitorType type, in double sensor_value);
                     LogSequence get_logs();
                 };
@@ -54,6 +54,7 @@ module xyz {
                 interface CentralControl {
                     void register(in string location);
                     void deregister(in string location);
+                    void update_stations(in string location);
                     void confirmed_alarm(in string location);
                 };
             };

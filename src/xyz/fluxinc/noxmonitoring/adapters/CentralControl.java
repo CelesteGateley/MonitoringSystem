@@ -7,6 +7,7 @@ import org.omg.CosNaming.NamingContextPackage.NotFound;
 import xyz.fluxinc.noxmonitoring.corba.CentralControlPOA;
 import xyz.fluxinc.noxmonitoring.corba.LocalControlServer;
 import xyz.fluxinc.noxmonitoring.corba.LogEntry;
+import xyz.fluxinc.noxmonitoring.corba.MonitorStation;
 import xyz.fluxinc.noxmonitoring.orbmanagement.LocalServerOrb;
 import xyz.fluxinc.noxmonitoring.resources.ControlScreenController;
 
@@ -39,7 +40,6 @@ public class CentralControl extends CentralControlPOA {
     @Override
     public void register(String location) {
         serverList.add(location);
-        System.out.println("Local Server Registered: " + location);
         if (controlScreenController != null) {
             updateUI();
         }
@@ -51,6 +51,19 @@ public class CentralControl extends CentralControlPOA {
         if (controlScreenController != null) {
             updateUI();
         }
+    }
+
+    @Override
+    public void update_stations(String location) {
+        Map<String, List<String>> serversByStation = new LinkedHashMap<>();
+        for (String server : serverList) {
+            try {
+                serversByStation.put(server, Arrays.asList(serverOrb.getObject(server).get_available_stations()));
+            } catch (CannotProceed | InvalidName | NotFound cannotProceed) {
+                cannotProceed.printStackTrace();
+            }
+        }
+        Platform.runLater(() -> controlScreenController.updateServerList(serversByStation));
     }
 
     @Override
@@ -72,6 +85,18 @@ public class CentralControl extends CentralControlPOA {
 
     private void updateUI() {
         Map<String, LogEntry[]> logs = getAllLogs();
-        Platform.runLater(() -> controlScreenController.updateServerList(logs));
+        Map<String, List<String>> stations = new LinkedHashMap<>();
+        for (String location : serverList) {
+            try {
+                LocalControlServer server = serverOrb.getObject(location);
+                stations.put(location, new ArrayList<>());
+                for (String station : server.get_available_stations()) {
+                    stations.get(location).add(station);
+                }
+            } catch (CannotProceed | InvalidName | NotFound cannotProceed) {
+                cannotProceed.printStackTrace();
+            }
+        }
+        Platform.runLater(() -> controlScreenController.updateServerList(logs, stations));
     }
 }

@@ -63,6 +63,7 @@ public class LocalControlServer extends LocalControlServerPOA {
                     }
                 }
             }
+            centralControlOrb.getObject(controlServer).update_stations(this.location);
         } catch (CannotProceed | InvalidName | NotFound | IllegalStationAccessException | IllegalSensorAccessException cannotProceed) {
             cannotProceed.printStackTrace();
         }
@@ -73,6 +74,11 @@ public class LocalControlServer extends LocalControlServerPOA {
     @Override
     public void deregister(String location) {
         stations.remove(location);
+        try {
+            centralControlOrb.getObject(controlServer).update_stations(this.location);
+        } catch (CannotProceed | InvalidName | NotFound cannotProceed) {
+            cannotProceed.printStackTrace();
+        }
         System.out.println("Monitor Station at " + location + " has been deregistered!");
     }
 
@@ -82,20 +88,8 @@ public class LocalControlServer extends LocalControlServerPOA {
     }
 
     @Override
-    public MonitorStation[] get_available_stations() {
-        List<MonitorStation> oStations = new ArrayList<>();
-        for (String location : stations) {
-            try {
-                MonitorStation station = orb.getObject(location);
-                if (station == null) {
-                    continue;
-                }
-                oStations.add(station);
-            } catch (CannotProceed | InvalidName | NotFound cannotProceed) {
-                cannotProceed.printStackTrace();
-            }
-        }
-        return oStations.toArray(MonitorStation[]::new);
+    public String[] get_available_stations() {
+        return stations.toArray(String[]::new);
     }
 
     @Override

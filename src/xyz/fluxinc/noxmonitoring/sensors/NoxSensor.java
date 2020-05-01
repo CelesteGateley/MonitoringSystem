@@ -7,13 +7,12 @@ public class NoxSensor extends Sensor {
     private boolean isDefault = true;
     private double value;
 
-    public NoxSensor() {
-    }
+    public NoxSensor() {}
 
     @Override
     public double getValue() throws IllegalSensorAccessException {
         if (isDefault) {
-            return -1;
+            return 0;
         }
         if (!this.isEnabled()) {
             throw new IllegalSensorAccessException("Attempted to get value of disabled sensor");

@@ -15,6 +15,7 @@ import org.omg.PortableServer.POAPackage.WrongPolicy;
 import xyz.fluxinc.noxmonitoring.adapters.CentralControl;
 import xyz.fluxinc.noxmonitoring.orbmanagement.CentralControlOrb;
 import xyz.fluxinc.noxmonitoring.orbmanagement.LocalServerOrb;
+import xyz.fluxinc.noxmonitoring.orbmanagement.MonitorStationOrb;
 import xyz.fluxinc.noxmonitoring.resources.ControlScreenController;
 
 import javax.swing.*;
@@ -27,6 +28,9 @@ public class RunControlServer extends Application {
     private static ControlScreenController controlScreenController;
     private static String[] staticArgs;
     private static Map<String, Object> argsMap;
+    private static MonitorStationOrb monitorStationOrb;
+    private static LocalServerOrb localServerOrb;
+    private static CentralControlOrb centralControlOrb;
 
     public static void main(String[] args) {
         staticArgs = args;
@@ -49,12 +53,12 @@ public class RunControlServer extends Application {
             System.exit(0);
         });
 
-        LocalServerOrb serverOrb = new LocalServerOrb(staticArgs);
-        CentralControl centralControl = new CentralControl(serverOrb, controlScreenController);
-        CentralControlOrb controlOrb = new CentralControlOrb(staticArgs, centralControl);
-        RunControlServerThread controlThread = new RunControlServerThread(controlOrb, (String) argsMap.get("location"));
+        monitorStationOrb = new MonitorStationOrb(staticArgs);
+        localServerOrb = new LocalServerOrb(staticArgs);
+        CentralControl centralControl = new CentralControl(localServerOrb, controlScreenController);
+        centralControlOrb = new CentralControlOrb(staticArgs, centralControl);
+        RunControlServerThread controlThread = new RunControlServerThread(centralControlOrb, (String) argsMap.get("location"));
         controlThread.start();
-
     }
 
     public static Parent loadFXML(String fxml) throws IOException {
@@ -87,4 +91,17 @@ public class RunControlServer extends Application {
             }
         }
     }
+
+    public static MonitorStationOrb getMonitorStationOrb() {
+        return monitorStationOrb;
+    }
+
+    public static LocalServerOrb getLocalServerOrb() {
+        return localServerOrb;
+    }
+
+    public static CentralControlOrb getCentralControlOrb() {
+        return centralControlOrb;
+    }
+
 }
