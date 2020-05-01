@@ -146,7 +146,8 @@ public class LocalControlServer extends LocalControlServerPOA {
             } catch (CannotProceed | InvalidName | NotFound | TRANSIENT cannotProceed) {
                 cannotProceed.printStackTrace();
                 stations.remove(station);
-            } catch (IllegalStationAccessException | IllegalSensorAccessException ignored) { }
+            } catch (IllegalStationAccessException | IllegalSensorAccessException ignored) {
+            }
         }
     }
 }

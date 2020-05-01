@@ -95,7 +95,9 @@ public class ControlScreenController {
     @FXML
     public void showInformation() {
         String station = fxStationList.getSelectionModel().getSelectedItem();
-        if (station == null) { return; }
+        if (station == null) {
+            return;
+        }
         fxMonitorStationMaxName.setText(station);
         List<LogEntry> entries = entriesByStation.get(station);
         fxEnableDisableButton.setVisible(true);
@@ -135,7 +137,9 @@ public class ControlScreenController {
     @FXML
     public void toggleStation() {
         String station = fxStationList.getSelectionModel().getSelectedItem();
-        if (station == null) { return; }
+        if (station == null) {
+            return;
+        }
         try {
             MonitorStation stationObj = RunControlServer.getMonitorStationOrb().getObject(station);
             if (stationObj.is_enabled()) {
